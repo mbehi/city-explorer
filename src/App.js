@@ -4,13 +4,15 @@ import './App.css';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
+import { Jumbotron } from 'react-bootstrap';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      city: ''
+      city: '',
+      cityData: {}
     };
   }
   handleFormSubmit = async(event) => {
@@ -18,6 +20,10 @@ class App extends React.Component {
     console.log(this.state.city);
     let cityData = await axios.get(`https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATIONIQ_KEY}&q=${this.state.city}&format=json`);
     console.log(cityData);
+    let cityICareAboutData = cityData.data[0];
+    this.setState({
+      cityData: cityICareAboutData
+    });
   }
   render() {
     return (
@@ -32,6 +38,10 @@ class App extends React.Component {
             Explore!
             </Button>
         </Form>
+        { this.state.cityData.lat !== undefined ? <Jumbotron>
+          <h3>{this.state.cityData.display_name}</h3>
+          <h5>{this.state.cityData.lat}, {this.state.cityData.lon}</h5>
+        </Jumbotron> : ''}
         </>
     )
   }

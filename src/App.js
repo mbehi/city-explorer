@@ -18,13 +18,20 @@ class App extends React.Component {
   handleFormSubmit = async(event) => {
     event.preventDefault();
     console.log(this.state.city);
-    let cityData = await axios.get(`https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATIONIQ_KEY}&q=${this.state.city}&format=json`);
-    console.log(cityData);
-    let cityICareAboutData = cityData.data[0];
-    this.setState({
-      cityData: cityICareAboutData
-    });
-  }
+    try {
+      let cityData = await axios.get(`https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATIONIQ_KEY}&q=${this.state.city}&format=json`);
+      console.log(cityData);
+      let cityICareAboutData = cityData.data[0];
+      this.setState({
+        cityData: cityICareAboutData
+      });
+    } catch (err) {
+      // debugger is current commented out
+      // debugger
+      console.log(err);
+      this.setState({error: err.message + err.response.data.error});
+    }
+   }
   render() {
     return (
       <>
@@ -38,6 +45,7 @@ class App extends React.Component {
             Explore!
             </Button>
         </Form>
+        { this.state.error ? <h3>{this.state.error}</h3> : ''}
         { this.state.cityData.lat !== undefined ? <Jumbotron>
           <h3>{this.state.cityData.display_name}</h3>
           <h5>{this.state.cityData.lat}, {this.state.cityData.lon}</h5>

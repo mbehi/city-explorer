@@ -1,25 +1,58 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import axios from 'axios';
+import { Jumbotron } from 'react-bootstrap';
 
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      city: '',
+      cityData: {}
+    };
+  }
+  handleFormSubmit = async(event) => {
+    event.preventDefault();
+    console.log(this.state.city);
+    try {
+      let cityData = await axios.get(`https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATIONIQ_KEY}&q=${this.state.city}&format=json`);
+      console.log(cityData);
+      let cityICareAboutData = cityData.data[0];
+      this.setState({
+        cityData: cityICareAboutData
+      });
+    } catch (err) {
+      // debugger is current commented out
+      // debugger
+      console.log(err);
+      this.setState({error: err.message + err.response.data.error});
+    }
+   }
+  render() {
+    return (
+      <>
+        <h1>City Explorer</h1>
+        <Form onSubmit={this.handleFormSubmit}>
+          <Form.Group controlId="city">
+            <Form.Label>City Name</Form.Label>
+            <Form.Control value={this.state.city} onInput={e => this.setState({city: e.target.value})}></Form.Control>
+          </Form.Group>
+          <Button variant="primary" type="submit">
+            Explore!
+            </Button>
+        </Form>
+        { this.state.error ? <h3>{this.state.error}</h3> : ''}
+        { this.state.cityData.lat !== undefined ? <Jumbotron>
+          <h3>{this.state.cityData.display_name}</h3>
+          <h5>{this.state.cityData.lat}, {this.state.cityData.lon}</h5>
+          <img src={`https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATIONIQ_KEY}&center=${this.state.cityData.lat},${this.state.cityData.lon}&zoom=13`} alt={`Map of ${this.state.cityData.display_name}`}/>
+        </Jumbotron> : ''}
+        </>
+    )
+  }
+}
 export default App;

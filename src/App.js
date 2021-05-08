@@ -10,7 +10,6 @@ import Weather from './Weather.js';
 class App extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       city: '',
       cityData: {},
@@ -28,7 +27,7 @@ class App extends React.Component {
       });
       this.getWeatherData();
   }
-
+  
   getWeatherData = async() => {
     try { 
       const weatherData = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/weather`)

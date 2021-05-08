@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
 import { Jumbotron } from 'react-bootstrap';
+import Weather from './Weather.js';
 
 class App extends React.Component {
   constructor(props) {
@@ -12,26 +13,28 @@ class App extends React.Component {
 
     this.state = {
       city: '',
-      cityData: {}
+      cityData: {},
+      weatherData: [],
     };
   }
   handleFormSubmit = async(event) => {
     event.preventDefault();
     console.log(this.state.city);
-    try {
-      let cityData = await axios.get(`https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATIONIQ_KEY}&q=${this.state.city}&format=json`);
+    let cityData = await axios.get(`https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATIONIQ_KEY}&q=${this.state.city}&format=json`);
       console.log(cityData);
       let cityICareAboutData = cityData.data[0];
       this.setState({
         cityData: cityICareAboutData
       });
-    } catch (err) {
-      // debugger is current commented out
-      // debugger
-      console.log(err);
-      this.setState({error: err.message + err.response.data.error});
-    }
-   }
+      this.getWeatherData();
+  }
+
+  getWeatherData = async() => {
+    const weatherData = await axios.get('http://localhost:3002/weather')
+    this.setState({
+      weatherData: weatherData.data
+    });
+  }
   render() {
     return (
       <>
@@ -46,11 +49,16 @@ class App extends React.Component {
             </Button>
         </Form>
         { this.state.error ? <h3>{this.state.error}</h3> : ''}
-        { this.state.cityData.lat !== undefined ? <Jumbotron>
+        { this.state.cityData.lat !== undefined ? 
+          <>
+          <Jumbotron>
           <h3>{this.state.cityData.display_name}</h3>
           <h5>{this.state.cityData.lat}, {this.state.cityData.lon}</h5>
           <img src={`https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATIONIQ_KEY}&center=${this.state.cityData.lat},${this.state.cityData.lon}&zoom=13`} alt={`Map of ${this.state.cityData.display_name}`}/>
-        </Jumbotron> : ''}
+          </Jumbotron>
+          <Weather weatherData={this.state.weatherData}/>
+        </>
+        : ''};
         </>
     )
   }

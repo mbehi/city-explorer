@@ -9,7 +9,6 @@ import { Jumbotron } from 'react-bootstrap';
 class App extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       city: '',
       cityData: {}

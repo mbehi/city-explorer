@@ -30,10 +30,14 @@ class App extends React.Component {
   }
 
   getWeatherData = async() => {
-    const weatherData = await axios.get('http://localhost:3002/weather')
-    this.setState({
-      weatherData: weatherData.data
-    });
+    try { 
+      const weatherData = await axios.get('http://localhost:3002/weather')
+      this.setState({
+        weatherData: weatherData.data
+      })
+    } catch(error){
+      console.log('error found', error.message);
+    }
   }
   render() {
     return (

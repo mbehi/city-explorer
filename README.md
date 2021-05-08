@@ -3,6 +3,8 @@
 **Author**: Mohsin Behi
 **Version**: 1.0.0 (increment the patch/fix version number if you make more commits past your first submission)
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/0c43f620-e9b6-4106-bea3-87890c89bbb2/deploy-status)](https://app.netlify.com/sites/cityexplorer301/deploys)
+
 ## Overview
 
 <!-- Provide a high level overview of what this application is and why you are building it, beyond the fact that it's an assignment for this class. (i.e. What's your problem domain?) -->
@@ -28,3 +30,4 @@ This app uses React on the frontend, with Bootstrap for styling and Axios for AP
 
 <!-- Give credit (and a link) to other people or resources that helped you build this application. -->
 Tom McGuire (Lab-06)
+Michelle and Ryan (Lecture Lab Review)

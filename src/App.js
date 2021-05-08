@@ -26,8 +26,7 @@ class App extends React.Component {
         cityData: cityICareAboutData
       });
       this.getWeatherData();
-  }
-  
+  }  
   getWeatherData = async() => {
     try { 
       const weatherData = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/weather`)
